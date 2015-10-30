@@ -497,14 +497,30 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
 // The following code for sliding background pizzas was pulled from Ilya's demo found at:
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
 
+//O P T I M I Z E
 // Moves the sliding background pizzas based on scroll position
 function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
-  var items = document.querySelectorAll('.mover');
+
+//Updating a lot of calculations.
+//HINT More efficient way instead of querySelectorAll to access DOM -> document.getElementsByClass
+  var items = document.getElementsByClassName('mover');('.mover');
+
+  //Selects all elements with the class 'mover'
+  //var items = document.getElementByClass('.mover');
+
   for (var i = 0; i < items.length; i++) {
-    var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
+  	//HINT why cant we just use 5 numbers to change the position of our eleemnt?  (i % 5) will only give us
+    // numbers 1 - 5
+    var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5)); 
+    	// HINT Console log to see if we can reduce time for the calculations
+    	//console.log(phase);
+
+ 	//HINT CSS3 has hardware acceleration and certain transformations that reduce the need to trigger
+ 	//a  re-layout
+ 	//HINT transfor: translateX(); instead of style.left (gets rid of re-layout)
     items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
   }
 
@@ -521,13 +537,13 @@ function updatePositions() {
 // runs updatePositions on scroll
 window.addEventListener('scroll', updatePositions);
 
-// Generates the sliding pizzas when the page loads.
+// Generates the animated pizzas when the page loads.
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
-  for (var i = 0; i < 200; i++) {
+  for (var i = 0; i < 200; i++) { // HINT are 200 pizzas necessry for above-fold content? 
     var elem = document.createElement('img');
-    elem.className = 'mover';
+    elem.className = 'mover'; //HINT all pizzas are inside the class mover
     elem.src = "images/pizza.png";
     elem.style.height = "100px";
     elem.style.width = "73.333px";
